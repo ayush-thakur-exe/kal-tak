@@ -1,6 +1,6 @@
-<img src="/documentation/logo.png" alt="logo" width="256" height="256" />     
+![logo](/documentation/logo.png)
 # Toofan Express
-News that will take you by storm
+News that will take you by storm         
 <sub>final project for web programming and framework</sub>
 
 ## Team Members
