@@ -1,4 +1,4 @@
-![logo](dataset/logo.png)
+![logo](/documentation/logo.png)
 # Toofan Express
 News that will take you by storm
 <sub>final project for web programming and framework</sub>
