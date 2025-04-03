@@ -1,4 +1,4 @@
-![logo](/documentation/logo.png)
+<img src="/documentation/logo.png" alt="logo" width="256" height="256" />
 # Toofan Express
 News that will take you by storm
 <sub>final project for web programming and framework</sub>
