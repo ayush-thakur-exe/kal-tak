@@ -1,8 +1,6 @@
 require('dotenv').config()
 const mongoose = require('mongoose');
 
-let isConnected = false
-
 // Model
 const Article = new mongoose.Schema({
     category: String,
@@ -13,16 +11,20 @@ const Article = new mongoose.Schema({
     link: String
 }, {
     collection: "article"
+}).index({
+    headline: 'text', 
+    short_description: 'text', 
+    authors: 'text', 
+    category: 'text'
 })
 
 // Usage
 async function Init(){
     await mongoose.connect(process.env.DB_URL);
-    isConnected = true
 }
 
 async function ArticleModel(){
-    if(!isConnected){await Init()}
+    if(!mongoose.connection.readyState){await Init()}
     
     const model = await mongoose.model('Article', Article)
     return model
