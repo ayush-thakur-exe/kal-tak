@@ -1,0 +1,99 @@
+<link href="/css/common.css" rel="stylesheet" />
+<style>
+    header{
+        width: 100%;
+        padding: 25px 0px;
+        height: fit-content;
+    }
+
+    .logo-band{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .title{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        gap: 20px;
+    }
+
+    .title img{
+        height: 128px;
+        width: 128px;
+        object-fit: cover;
+    }
+
+    .title-text{
+        font-family: NexaLight;
+        font-size: 2em;
+    }
+
+    .title-text b{
+        font-family: Nexa;
+        font-size: 1.3em;
+    }
+
+
+    .title-text span{
+        display: block;
+        letter-spacing: 5px;
+    }
+
+    .category-row{
+        display: flex;
+        flex-direction: row;
+        padding: 20px 0px;
+        align-items: center;
+        flex-wrap: wrap;
+
+        gap:10px;
+
+        border-bottom: 2px solid var(--light-g);
+    }
+
+    .live-news{
+        padding: 20px 0px;
+        border-bottom: 2px solid var(--light-g);
+    }
+</style>
+<header>
+    <div class="logo-band">
+        <div class="title">
+            <img src="/assets/logo.png" alt="Logo" />
+            <div class="title-text">
+                <b>Toofan</b>
+                <span>Express</span>
+            </div>
+        </div>
+        <div>
+            Login
+        </div>
+    </div>
+
+    <div class="category-row">
+        <a class="button-a">Politics</a>
+        <a class="button-a">Wellness</a>
+        <a class="button-a">Entertainment</a>
+        <a class="button-a">Travel</a>
+        <a class="button-a">Style & Beuty</a>
+        <a class="button-a">Parenting</a>
+        <a class="button-a">Healthy Living</a>
+        <a class="button-a">Queer voices</a>
+        <a class="button-a">Food & Drink</a>
+        <a class="button-a">Business</a>
+        <a class="button-a">Comedy</a>
+        <a class="button-a">Sports</a>
+        <a class="button-a">Black voices</a>
+        <a class="button-a">Home & living</a>
+        <a class="button-a">Parents</a>
+    </div>
+
+    <div class="live-news">
+        News here constantly rotating....
+    </div>
+</header>
