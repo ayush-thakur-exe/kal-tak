@@ -1,19 +1,29 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
+const ejs = require('ejs')
+
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+
 const { UserModel } = require('./database/model/User')
 const { ArticleModel } = require('./database/model/Article')
+const { Home } = require('./ui')
 
 // Setup and middlewear
+app.set('view engine', 'ejs');
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded())
 app.use(cookieParser())
 app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }))
+
+/*
+*   UI RELATED
+*/
+app.get('/', Home)
 
 /* 
     USER RELATED
@@ -221,7 +231,6 @@ app.delete("/api/article/:id", (req, res, next) => {
     })
     .catch(err => res.send("Could not delete article - 500 " + err))
 })
-
 
 // SERVER
 app.listen(process.env.PORT, process.env.HOSTNAME, err => {
