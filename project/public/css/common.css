@@ -12,7 +12,10 @@
 
 :root{
     --light-g: #D9D9D9;
-    --dark-g: #9D9D9D
+    --dark-g: #9D9D9D;
+    --dark-red: #A81917;
+    --dark-green: #3c7a40;
+    --light-green: #7ade81;
 }
 
 body{
@@ -24,13 +27,38 @@ body{
     margin: auto;
 }
 
-.button-a{
+.button-a, .dark-button-a, .red-button-a, .green-button-a{
     background-color: var(--light-g);
     border-radius: 10px;
     padding: 10px;
+
+    text-decoration: none;
+    color: black;
 }
 
-.button-a:hover{
-    background-color: var(--dark-g);
+.dark-button-a{
+    color: white;
+    background-color: black;
+}
+
+.red-button-a{
+    background-color: var(--dark-red);
+}
+
+.green-button-a{
+    background-color: var(--light-green);
+}
+
+.button-a:hover, .dark-button-a:hover, .red-button-a:hover, .green-button-a:hover{
+    filter: brightness(75%);
     cursor: pointer;
+}
+
+.undecorated-a{
+    text-decoration: none;
+    color: black;
+}
+
+.col-span-2{
+    grid-column: span 2;
 }
