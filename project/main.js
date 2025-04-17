@@ -137,7 +137,6 @@ app.get("/", (req, res, next) => {
                 if(user.role === "publisher"){
                     currentRole = "publisher"
                 }
-                console.log(user.username)
             }
         }).finally(f => {
             res.render('pages/home', {articles: result, role: currentRole})
@@ -152,7 +151,19 @@ app.get("/article/:id", (req, res, next) => {
         if(result == null){
             res.send("no article found :(")
         }else{
-            res.render("pages/article", {article: result})
+            var currentRole = "viewer"
+            
+            UserModel().then(model => {
+                return model.findOne({token: req.cookies.authToken})
+            }).then(user => {
+                if(user != null){
+                    if(user.role === "publisher"){
+                        currentRole = "publisher"
+                    }
+                }
+            }).finally(f => {
+                res.render('pages/article', {article: result, role: currentRole})
+            })
         }
     })
 })
@@ -180,9 +191,21 @@ app.get("/search", (req, res, next) => {
                 return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: 1})
             }
         }
-    }).then( result =>
-        res.render('pages/home', {articles: result})
-    ).catch(err => {
+    }).then( result => {
+        var currentRole = "viewer"
+
+        UserModel().then(model => {
+            return model.findOne({token: req.cookies.authToken})
+        }).then(user => {
+            if(user != null){
+                if(user.role === "publisher"){
+                    currentRole = "publisher"
+                }
+            }
+        }).finally(f => {
+            res.render('pages/home', {articles: result, role: currentRole})
+        })
+    }).catch(err => {
         console.log("---- " + err)
         res.send("Error getting query: " + err)
     })
@@ -225,7 +248,7 @@ app.post("/api/article/create", (req, res, next) => {
 })
 
 // -- update
-app.put("/api/article/:id", (req, res, next) => {
+app.put("/article/:id", (req, res, next) => {
     ArticleModel().then(model => {
         try{
             return model.findOneAndUpdate({_id: req.params.id}, {

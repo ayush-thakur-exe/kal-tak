@@ -38,6 +38,19 @@
             letter-spacing: 2px;
             font-size: 2em;
         }
+
+        .article-link{
+            margin-bottom: 40px;
+        }
+
+        .article-actions img{
+            vertical-align: middle;
+        }
+
+        .article-actions span{
+            padding: 10px;
+            margin-right: 10px;
+        }
     </style>
 
 </head>
@@ -67,10 +80,29 @@
                         Read More ↗
                     </a>
                 </div>
+                <% if(locals.role != undefined && role === "publisher"){ %>
+                <div class="article-actions">
+                    <span class="dark-button-a" id="btnEdit">
+                        <img src="/assets/edit.png" />
+                    </span>
+                    <span class="dark-button-a" id="btnDelete">
+                        <img src="/assets/delete.png" />
+                    </span>
+                </div>
+
+                <%- include('../partials/form_article', {formMethod: 'PUT', formAction: '/article/' + article._id, article: article}) %>
+                <% } %>
             </div>
         </div>
 
         <%- include('../partials/footer') %>
     </div>
 </body>
+
+<% if(locals.role != undefined && role === "publisher"){ %>
+<script>
+
+</script>
+<% } %>
+
 </html>

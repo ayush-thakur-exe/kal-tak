@@ -134,7 +134,9 @@
         var pageNumber = 1
         var windowArgs = []
         window.onload = () => {
-            windowArgs = window.location.href.split("?")[1].split("&")
+            if(window.location.href.split("?").length > 1){
+                windowArgs = window.location.href.split("?")[1].split("&")
+            }
 
             console.log(windowArgs) 
 
