@@ -20,12 +20,15 @@
         .toolbar{
             display: flex;
             gap: 10px;
-            justify-content: right;
+            justify-content: space-between;
             align-items: stretch;
+
+            height: fit-content;
         }
 
         .toolbar input, select{
             border-radius: 10px;
+            height: 100%;
         }
 
         .pagination{
@@ -47,13 +50,18 @@
         <%- include('../partials/header', {role: locals.role != undefined ? role : ""}) %>
 
         <div class="toolbar">
-            <input type="text" id="tQuery" />
-            <input type="button" value="search" class="dark-button-a" id="btnSearch"/>
-            <select id="sSort">
-                <option>sort by none</option>
-                <option>sort by newest</option>
-                <option>sort by oldest</option>
-            </select>
+            <div>
+                <input type="button" value="+ Add Article" id="btnAddArticle" class="dark-button-a"/>
+            </div>
+            <div>
+                <input type="text" id="tQuery" />
+                <input type="button" value="search" class="dark-button-a" id="btnSearch"/>
+                <select id="sSort">
+                    <option>sort by none</option>
+                    <option>sort by newest</option>
+                    <option>sort by oldest</option>
+                </select>
+            </div>
         </div>
         
         <link rel="stylesheet" href="/css/card_article.css" />
@@ -77,6 +85,8 @@
             <span class="page-number" id="tPageNumber">1</span>
             <input type="button" value="▶" id="btnNextPage" class="button-a" />
         </div>
+
+        <%- include('../partials/form_article', {formMethod: "POST", formAction: "/article/create"}) %>
 
         <%- include('../partials/footer') %>
     </div>
@@ -177,7 +187,9 @@
             window.location.href = window.location.href.split("?")[0] + "?" + windowArgs.join("&")
         }
 
-        
+        $("#btnAddArticle").addEventListener("click", () => {
+            $("#curd-article").classList.add("visible-flex")
+        })
     </script>
 </body>
 </html>

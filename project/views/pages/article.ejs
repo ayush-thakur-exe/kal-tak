@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <% if(locals.message == undefined) { %>
     <title><%= article.headline.substr(0, 10) + "..." %></title>
+    <% } else {%>
+    <title>Error 404</title>
+    <% } %>
+
     <link href="/css/common.css" rel="stylesheet" />
 
     <style>
@@ -57,7 +62,20 @@
 <body>
     <div class="container">
         <%- include('../partials/header') %>
+
+        <% if(locals.message != undefined) { %>
+            <div class="article-headline">
+                <%= message %>
+            </div>
+            
+            <div class="article-body">
+                <div class="article-description">
+                    Go back to <a href="/">home</a>
+                </div>
+            </div>
+        <% } %>
         
+        <% if(locals.message == undefined) { %>
         <div class="article-headline">
             <%= article.headline %>
         </div>
@@ -94,14 +112,38 @@
                 <% } %>
             </div>
         </div>
+        <% } %>
 
         <%- include('../partials/footer') %>
     </div>
 </body>
 
-<% if(locals.role != undefined && role === "publisher"){ %>
+<% if(locals.role != undefined && role === "publisher" && locals.message == undefined){ %>
 <script>
+    window.onload = () => {
+        document.querySelector("#btnEdit").addEventListener("click", () => {
+            document.querySelector("#curd-article").classList.add("visible-flex")
+            console.log(document.querySelector("#curd-article").classList)
+        })
 
+        document.querySelector("#btnDelete").addEventListener("click", () => {
+            fetch("/article/<%= article._id %>",  {
+                method: "delete",
+                headers:{
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                },  
+                body: new URLSearchParams({
+                    id: "<%= article._id %>"
+                })
+            }).then(result => {
+                if(result.status == 200){
+                    window.location.reload()
+                }else{
+                    alert("Article could not be deleted")
+                }
+            })
+        })
+    }
 </script>
 <% } %>
 

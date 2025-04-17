@@ -149,7 +149,7 @@ app.get("/article/:id", (req, res, next) => {
         return model.findOne({_id: req.params.id})
     }).then( result =>{
         if(result == null){
-            res.send("no article found :(")
+            res.render('pages/article', {message: "This article is either deleted or not in the database :("})
         }else{
             var currentRole = "viewer"
             
@@ -220,14 +220,15 @@ function mRoleChecker(req, res, next){
         if(result.length != 0 && result[0].role === "publisher"){
             next()
         }else{
-            res.send("403 - Unauthorized")
+            res.sendStatus(403)
         }
     })
 }
 app.use(mRoleChecker)
 
 // -- create
-app.post("/api/article/create", (req, res, next) => {
+app.post("/article/create", (req, res, next) => {
+    console.log("creating: " + JSON.stringify(req.body))
     ArticleModel().then(model => {
         try{
             const entry = new model({
@@ -249,6 +250,7 @@ app.post("/api/article/create", (req, res, next) => {
 
 // -- update
 app.put("/article/:id", (req, res, next) => {
+    console.log("Got req: " + req.body)
     ArticleModel().then(model => {
         try{
             return model.findOneAndUpdate({_id: req.params.id}, {
@@ -273,7 +275,7 @@ app.put("/article/:id", (req, res, next) => {
 })
 
 // -- delete
-app.delete("/api/article/:id", (req, res, next) => {
+app.delete("/article/:id", (req, res, next) => {
     ArticleModel().then(model => {
         try{
             return model.findOneAndDelete({_id: req.params.id})
