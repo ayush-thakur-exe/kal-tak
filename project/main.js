@@ -1,15 +1,19 @@
 require('dotenv').config()
 const express = require('express')
 const app = express()
+const ejs = require('ejs')
+
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
+
 const { UserModel } = require('./database/model/User')
 const { ArticleModel } = require('./database/model/Article')
 
 // Setup and middlewear
+app.set('view engine', 'ejs');
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded())
 app.use(cookieParser())
@@ -18,7 +22,11 @@ app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUniniti
 /* 
     USER RELATED
 */
-app.post('/api/auth/register', (req, res, next) => {
+app.get('/register', (req, res, next) => {
+    res.render('pages/register')
+})
+
+app.post('/register', (req, res, next) => {
     bcrypt.genSalt(10, (err, salt) => {
         bcrypt.hash(req.body.password, salt, (err, hash) => {
             req.session.username = req.body.username
@@ -34,7 +42,7 @@ app.post('/api/auth/register', (req, res, next) => {
 
                 return entry.save()
             }).then(rt => {
-                res.send("Sign up successful!")
+                res.redirect('/login?reg=1')
             }).catch(err => {
                 res.send("Error 500: " + err)
             })
@@ -42,7 +50,15 @@ app.post('/api/auth/register', (req, res, next) => {
     })
 })
 
-app.post('/api/auth/login', (req, res, next) => {
+app.get("/login", (req, res, next) => {
+    if(req.query.reg === "1"){
+        res.render("pages/login", {message: "Sign up successful!"})
+    }else{
+        res.render("pages/login")
+    }
+})
+
+app.post('/login', (req, res, next) => {
     UserModel().then(model => {
         return model.find({username: req.body.username})
     }).then(result => {
@@ -61,17 +77,21 @@ app.post('/api/auth/login', (req, res, next) => {
                         {token: authToken}
                     )
                 }).then(result => {
-                    res.send("Login successful!")
+                    res.redirect("/")
                 })
             }else{
-                res.send("Password does not match: " + err)
+                res.render("pages/login", {message: "Password does not match"})
             }
         })
     }).catch(e => {
-        res.send("Failed to login: " + e)
+        res.render("pages/login", {message: "Couldn't find that username"})
     })
 })
 
+app.get("/logout", (req, res, next) => {
+    res.cookie('authToken', "", { maxAge: 0, httpOnly: true})
+    res.redirect("/")
+})
 
 /*
     ARTICLE RELATED
@@ -80,7 +100,7 @@ app.post('/api/auth/login', (req, res, next) => {
 // Normal operations
 
 // -- read
-app.get("/api/article/view", (req, res, next) => {
+app.get("/", (req, res, next) => {
     let findParams = {}
 
     // pagination
@@ -94,7 +114,7 @@ app.get("/api/article/view", (req, res, next) => {
     // getting by category
     let category = req.query.category ?? null
     if(category != null){
-        findParams.category = category
+        findParams.category = category.toUpperCase()
     }
     
     ArticleModel().then(model => {
@@ -107,37 +127,85 @@ app.get("/api/article/view", (req, res, next) => {
                 return model.find(findParams).skip(startI).limit(10).sort({date: 1})
             }
         }
-    }).then( result =>
-        res.send(result)
-    )
+    }).then( result => {
+        let currentRole = "viewer"
+
+        UserModel().then(model => {
+            return model.findOne({token: req.cookies.authToken})
+        }).then(user => {
+            if(user != null){
+                if(user.role === "publisher"){
+                    currentRole = "publisher"
+                }
+            }
+        }).finally(f => {
+            res.render('pages/home', {articles: result, role: currentRole})
+        })
+    })
 })
 
-app.get("/api/article/view/:id", (req, res, next) => {
+app.get("/article/:id", (req, res, next) => {
     ArticleModel().then(model => {
         return model.findOne({_id: req.params.id})
     }).then( result =>{
         if(result == null){
-            res.send("no article found :(")
+            res.render('pages/article', {message: "This article is either deleted or not in the database :("})
         }else{
-            res.send(result)
+            var currentRole = "viewer"
+            
+            UserModel().then(model => {
+                return model.findOne({token: req.cookies.authToken})
+            }).then(user => {
+                if(user != null){
+                    if(user.role === "publisher"){
+                        currentRole = "publisher"
+                    }
+                }
+            }).finally(f => {
+                res.render('pages/article', {article: result, role: currentRole})
+            })
         }
     })
 })
 
-app.get("/api/article/search", (req, res, next) => {
+app.get("/search", (req, res, next) => {
     let page = req.query.page ?? 1
     let startI = (parseInt(page) - 1) * 10
     let query = req.query.q ?? null
+
+    // sorting by date
+    let sortField = req.query.sort ?? null
+    let order = req.query.order ?? "desc"
 
     if(query == null){
         res.send("Please enter a query")
     }
     
     ArticleModel().then(model => {
-        return model.find({$text: {$search: query}}).skip(startI).limit(10)
-    }).then( result =>
-        res.send(result)
-    ).catch(err => {
+        if(sortField == null){
+            return model.find({$text: {$search: query}}).skip(startI).limit(10)
+        }else{
+            if(sortField === "date" && order === "desc"){
+                return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: -1})
+            }else{
+                return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: 1})
+            }
+        }
+    }).then( result => {
+        var currentRole = "viewer"
+
+        UserModel().then(model => {
+            return model.findOne({token: req.cookies.authToken})
+        }).then(user => {
+            if(user != null){
+                if(user.role === "publisher"){
+                    currentRole = "publisher"
+                }
+            }
+        }).finally(f => {
+            res.render('pages/home', {articles: result, role: currentRole})
+        })
+    }).catch(err => {
         console.log("---- " + err)
         res.send("Error getting query: " + err)
     })
@@ -152,14 +220,15 @@ function mRoleChecker(req, res, next){
         if(result.length != 0 && result[0].role === "publisher"){
             next()
         }else{
-            res.send("403 - Unauthorized")
+            res.sendStatus(403)
         }
     })
 }
 app.use(mRoleChecker)
 
 // -- create
-app.post("/api/article/create", (req, res, next) => {
+app.post("/article/create", (req, res, next) => {
+    console.log("creating: " + JSON.stringify(req.body))
     ArticleModel().then(model => {
         try{
             const entry = new model({
@@ -180,7 +249,8 @@ app.post("/api/article/create", (req, res, next) => {
 })
 
 // -- update
-app.put("/api/article/:id", (req, res, next) => {
+app.put("/article/:id", (req, res, next) => {
+    console.log("Got req: " + req.body)
     ArticleModel().then(model => {
         try{
             return model.findOneAndUpdate({_id: req.params.id}, {
@@ -205,7 +275,7 @@ app.put("/api/article/:id", (req, res, next) => {
 })
 
 // -- delete
-app.delete("/api/article/:id", (req, res, next) => {
+app.delete("/article/:id", (req, res, next) => {
     ArticleModel().then(model => {
         try{
             return model.findOneAndDelete({_id: req.params.id})
@@ -221,7 +291,6 @@ app.delete("/api/article/:id", (req, res, next) => {
     })
     .catch(err => res.send("Could not delete article - 500 " + err))
 })
-
 
 // SERVER
 app.listen(process.env.PORT, process.env.HOSTNAME, err => {

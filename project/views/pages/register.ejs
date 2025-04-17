@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Toofan Express</title>
+    <link href="/css/common.css" rel="stylesheet" />
+
+    <style>
+        form{
+            display: grid;
+            grid-template-columns: auto 1fr;
+        
+            gap: 20px 10px;
+
+            width: 30%;
+            margin: auto;
+
+            border: 1px solid var(--dark-g);
+            border-radius: 15px;
+            padding: 20px;
+
+            justify-content: center;
+            align-items: center;
+        }
+
+        input{
+            height: 30px;
+        }
+
+        input[type='submit']{
+            display: block;
+            padding: 10px 20px;
+            height: fit-content;
+            margin: auto;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <%- include('../partials/header') %>
+        <form action="/register" method="post">
+            <input type="hidden" value="publisher" name="role" />
+            <div class="col-span-2">
+                <b>Register a new publisher</b>
+            </div>
+            <span>First name:</span>
+            <input type="text">
+            <span>Last name:</span>
+            <input type="text"/>
+            <span>Username:</span>
+            <input type="text" placeholder="username" name="username"/>
+            <span>Password:</span>
+            <input type="password" placeholder="password" name="password"/>
+            <div class="col-span-2">
+                <input type="submit" value="Login" class="dark-button-a"/>
+            </div>
+            <br/><br/>
+            <div class="col-span-2">
+                Don't have an account?
+                Try to <a href="/register">Register</a>
+            </div>
+
+        </form>
+        <%- include('../partials/footer') %>
+    </div>
+</body>
+</html>
