@@ -5,11 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toofan Express</title>
     <link href="/css/common.css" rel="stylesheet" />
+
+    <style>
+        .article-grid{
+            display: grid;
+            grid-template-columns: 4fr 2fr;
+            gap: 20px 30px;
+
+            margin: 40px auto;
+
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <%- include('../partials/header') %>
-        Hello mate
+        <%- include('../partials/header', {role: locals.role != undefined ? role : ""}) %>
+        
+        <link rel="stylesheet" href="/css/card_article.css" />
+        <div class="article-grid">
+            <div>
+                <% for(let i = 0; i < articles.length/2; i++){%>
+                    <% if (articles[i] == undefined) {continue} %>
+                    <%- include('../partials/card_article', {article: articles[i]}) %>
+                <% } %>
+            </div>
+            <div>
+                <% for(let i = articles.length/2; i < articles.length; i++){ %>
+                    <% if (articles[i] == undefined) {continue} %>
+                    <%- include('../partials/card_article', {article: articles[i]}) %>
+                <% } %>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
     </div>
 </body>
 </html>

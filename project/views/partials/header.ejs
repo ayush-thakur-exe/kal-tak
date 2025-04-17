@@ -4,6 +4,8 @@
         width: 100%;
         padding: 25px 0px;
         height: fit-content;
+
+        margin-bottom: 30px;
     }
 
     .logo-band{
@@ -42,6 +44,7 @@
     .title-text span{
         display: block;
         letter-spacing: 5px;
+        margin-top: -15px;
     }
 
     .category-row{
@@ -61,36 +64,51 @@
         border-bottom: 2px solid var(--light-g);
     }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&icon_names=person_edit" />
 <header>
     <div class="logo-band">
         <div class="title">
+            <a href="/" class="undecorated-a">
             <img src="/assets/logo.png" alt="Logo" />
+            </a>
             <div class="title-text">
+                <a href="/" class="undecorated-a">
                 <b>Toofan</b>
                 <span>Express</span>
+                </a>
             </div>
         </div>
-        <div>
-            Login
+        <% if(locals.role == undefined || role === "viewer") {%>
+        <div class="dark-button-a">
+            <a href="/login">
+                <img src="/assets/person_edit.png" alt="Person edit" />
+            </a>
         </div>
+        <% } else { %>
+        <div class="red-button-a">
+            <a href="/logout">
+                <img src="/assets/logout.png" alt="Log out?" />
+            </a>
+        </div>
+        <% } %>
     </div>
 
     <div class="category-row">
-        <a class="button-a">Politics</a>
-        <a class="button-a">Wellness</a>
-        <a class="button-a">Entertainment</a>
-        <a class="button-a">Travel</a>
-        <a class="button-a">Style & Beuty</a>
-        <a class="button-a">Parenting</a>
-        <a class="button-a">Healthy Living</a>
-        <a class="button-a">Queer voices</a>
-        <a class="button-a">Food & Drink</a>
-        <a class="button-a">Business</a>
-        <a class="button-a">Comedy</a>
-        <a class="button-a">Sports</a>
-        <a class="button-a">Black voices</a>
-        <a class="button-a">Home & living</a>
-        <a class="button-a">Parents</a>
+        <a class="button-a" href="/?category=politics">Politics</a>
+        <a class="button-a" href="/?category=wellness">Wellness</a>
+        <a class="button-a" href="/?category=entertainment">Entertainment</a>
+        <a class="button-a" href="/?category=travel">Travel</a>
+        <a class="button-a" href="/?category=style%20%26%20beauty">Style & Beauty</a>
+        <a class="button-a" href="/?category=parenting">Parenting</a>
+        <a class="button-a" href="/?category=healthy%20living">Healthy Living</a>
+        <a class="button-a" href="/?category=queer%20voices">Queer voices</a>
+        <a class="button-a" href="/?category=food%20%26%20drink">Food & Drink</a>
+        <a class="button-a" href="/?category=business">Business</a>
+        <a class="button-a" href="/?category=comedy">Comedy</a>
+        <a class="button-a" href="/?category=sports">Sports</a>
+        <a class="button-a" href="/?category=black%20voices">Black voices</a>
+        <a class="button-a" href="/?category=home%20%26%20living">Home & living</a>
+        <a class="button-a" href="/?category=parents">Parents</a>
     </div>
 
     <div class="live-news">
