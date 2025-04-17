@@ -1,0 +1,140 @@
+<style>
+    .curd-article{
+        position: fixed;
+        width: 100dvw;
+        height: 100dvh;
+
+        top: 0;
+        left: 0;
+        
+        display: flex;
+        visibility: hidden;
+        justify-content: center;
+        align-items: center;
+        
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .visible-flex{
+        visibility: visible;
+    }
+
+    .curd-article-form{
+        min-width: fit-content;
+        max-width: 800px;
+        width: 60%;
+        padding: 30px;
+        margin: auto;
+
+        border: 1px solid var(--dark-g);
+        border-radius: 10px;
+        background-color: white;
+
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+</style>
+<div class="curd-article" id="curd-article">
+    <form class="curd-article-form">
+        <div>
+            <b>Article Info</b>
+        </div>
+        <br/>
+        <div>
+            Category
+        </div>
+        <select name="category" id="sCategory">
+            <option value="POLITICS">Politics</option>
+            <option value="WELLNESS">Wellness</option>
+            <option value="ENTERTAINMENT">Entertainment</option>
+            <option value="TRAVEL">Travel</option>
+            <option value="STYLE & BEAUTY">Style & Beauty</option>
+            <option value="PARENTING">Parenting</option>
+            <option value="HEALTHY LIVING">Healthy Living</option>
+            <option value="QUEER VOICES">Queer Voices</option>
+            <option value="FOOD & DRINK">Food & Drink</option>
+            <option value="BUSINESS">Business</option>
+            <option value="COMEDY">Comedy</option>
+            <option value="SPORTS">Sports</option>
+            <option value="BLACK VOICES">Black voices</option>
+            <option value="HOME & LIVING">Home & living</option>
+            <option value="PARENTS">Parents</option>
+        </select>
+        <div>
+            Headline
+        </div>
+        <input type="text" name="headline" id="tHeadline" />
+        <div>
+            Short Description
+        </div>
+        <textarea name="short_description" rows="6" id="tShortDescription"></textarea>
+        <div>
+            Authors
+        </div>
+        <input type="text" name="authors" id="tAuthors"/>
+        <div>
+            Date
+        </div>
+        <input type="date" name="date" id="tDate"/>
+        <div>
+            Link
+        </div>
+        <input type="text" name="link" id="tLink"/>
+        <br/>
+        <div>
+            <input type="submit" value="Submit" class="dark-button-a" id="btnSubmit" />
+            <input type="button" value="Cancel" class="dark-button-a" id="btnCancel" />
+        </div>
+    </form>
+
+    <% if(locals.article != undefined) {%>
+        <script>
+            console.log("category: <%= article.category %>")
+            for(let i = 0; i < document.querySelector("#sCategory").options.length; i++){
+                if(document.querySelector("#sCategory").options[i].value === "<%- article.category %>"){
+                    document.querySelector("#sCategory").options.selectedIndex = i
+                    break;
+                }
+            }
+
+            document.querySelector("#tHeadline").value = "<%- article.headline %>"
+            document.querySelector("#tShortDescription").value = "<%- article.short_description %>"
+            document.querySelector("#tAuthors").value = "<%- article.authors %>"
+            document.querySelector("#tDate").value = "<%- article.date %>"
+            document.querySelector("#tLink").value = "<%- article.link %>"
+        </script>
+    <% } %> 
+
+    <script>
+        document.querySelector("#btnCancel").addEventListener("click", () => {
+            document.querySelector("#curd-article").classList.remove("visible-flex")
+        })
+
+        document.querySelector("#btnSubmit").addEventListener("click", (event) => {
+            event.preventDefault()
+
+            fetch("<%= formAction %>",{
+                method: "<%= formMethod %>",
+                headers:{
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },  
+                body: new URLSearchParams({
+                    category: document.querySelector("#sCategory").options[document.querySelector("#sCategory").options.selectedIndex].value,
+                    headline: document.querySelector("#tHeadline").value,
+                    short_description: document.querySelector("#tShortDescription").value,
+                    authors: document.querySelector("#tAuthors").value,
+                    date: document.querySelector("#tDate").value,
+                    link:document.querySelector("#tLink").value
+                })
+            }).then(result => {
+                if(result.status == 200){
+                    document.querySelector("#curd-article").classList.remove("visible-flex")
+                    window.location.reload()
+                }else{
+                    alert("An error occured!")
+                }
+            })
+        })
+    </script>
+</div>

@@ -137,7 +137,6 @@ app.get("/", (req, res, next) => {
                 if(user.role === "publisher"){
                     currentRole = "publisher"
                 }
-                console.log(user.username)
             }
         }).finally(f => {
             res.render('pages/home', {articles: result, role: currentRole})
@@ -150,9 +149,21 @@ app.get("/article/:id", (req, res, next) => {
         return model.findOne({_id: req.params.id})
     }).then( result =>{
         if(result == null){
-            res.send("no article found :(")
+            res.render('pages/article', {message: "This article is either deleted or not in the database :("})
         }else{
-            res.render("pages/article", {article: result})
+            var currentRole = "viewer"
+            
+            UserModel().then(model => {
+                return model.findOne({token: req.cookies.authToken})
+            }).then(user => {
+                if(user != null){
+                    if(user.role === "publisher"){
+                        currentRole = "publisher"
+                    }
+                }
+            }).finally(f => {
+                res.render('pages/article', {article: result, role: currentRole})
+            })
         }
     })
 })
@@ -180,9 +191,21 @@ app.get("/search", (req, res, next) => {
                 return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: 1})
             }
         }
-    }).then( result =>
-        res.render('pages/home', {articles: result})
-    ).catch(err => {
+    }).then( result => {
+        var currentRole = "viewer"
+
+        UserModel().then(model => {
+            return model.findOne({token: req.cookies.authToken})
+        }).then(user => {
+            if(user != null){
+                if(user.role === "publisher"){
+                    currentRole = "publisher"
+                }
+            }
+        }).finally(f => {
+            res.render('pages/home', {articles: result, role: currentRole})
+        })
+    }).catch(err => {
         console.log("---- " + err)
         res.send("Error getting query: " + err)
     })
@@ -197,14 +220,15 @@ function mRoleChecker(req, res, next){
         if(result.length != 0 && result[0].role === "publisher"){
             next()
         }else{
-            res.send("403 - Unauthorized")
+            res.sendStatus(403)
         }
     })
 }
 app.use(mRoleChecker)
 
 // -- create
-app.post("/api/article/create", (req, res, next) => {
+app.post("/article/create", (req, res, next) => {
+    console.log("creating: " + JSON.stringify(req.body))
     ArticleModel().then(model => {
         try{
             const entry = new model({
@@ -225,7 +249,8 @@ app.post("/api/article/create", (req, res, next) => {
 })
 
 // -- update
-app.put("/api/article/:id", (req, res, next) => {
+app.put("/article/:id", (req, res, next) => {
+    console.log("Got req: " + req.body)
     ArticleModel().then(model => {
         try{
             return model.findOneAndUpdate({_id: req.params.id}, {
@@ -250,7 +275,7 @@ app.put("/api/article/:id", (req, res, next) => {
 })
 
 // -- delete
-app.delete("/api/article/:id", (req, res, next) => {
+app.delete("/article/:id", (req, res, next) => {
     ArticleModel().then(model => {
         try{
             return model.findOneAndDelete({_id: req.params.id})
