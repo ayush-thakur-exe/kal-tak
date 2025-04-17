@@ -16,11 +16,32 @@
 
             width: 100%;
         }
+
+        .toolbar{
+            display: flex;
+            gap: 10px;
+            justify-content: right;
+            align-items: stretch;
+        }
+
+        .toolbar input, select{
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <%- include('../partials/header', {role: locals.role != undefined ? role : ""}) %>
+
+        <div class="toolbar">
+            <input type="text" id="tQuery" />
+            <input type="button" value="search" class="dark-button-a" id="btnSearch"/>
+            <select id="sSort">
+                <option>sort by none</option>
+                <option>sort by newest</option>
+                <option>sort by oldest</option>
+            </select>
+        </div>
         
         <link rel="stylesheet" href="/css/card_article.css" />
         <div class="article-grid">
@@ -40,5 +61,56 @@
 
         <%- include('../partials/footer') %>
     </div>
+
+    <script>
+        function $(x){
+            return document.querySelector(x)
+        }
+
+        $("#btnSearch").addEventListener("click", () => {
+            let query = $("#tQuery").value.replaceAll(" ", "%20")
+            window.location.href = "/search?q=" + query
+        })
+
+        $("#sSort").addEventListener("change", () => {
+
+            let sort = "date"
+            let order = "desc"
+            if($("#sSort").options.selectedIndex == 2){
+                order = "asc"
+            }
+
+            let link = window.location.href
+
+            if(link.includes("?")){
+                var args = link.split("?")[1]
+                if(args.includes("&")){
+                    args = args.split("&")
+                }else{
+                    args = [args]
+                }
+
+                let isSorted = false
+                for(let i = 0; i < args.length; i++){
+                    if(args[i].includes("order")){
+                        isSorted = true
+                        args[i] = "order="+order
+                    }
+                }
+                
+                if(!isSorted){
+                    args.push("sort=date")
+                    args.push("order="+order)
+                }
+
+                link = link.split("?")[0] + "?" + args.join("&")
+            }else{
+                
+                link = link + "?sort=date&order=" + order
+            }
+
+            window.location.href = link
+        })
+    </script>
 </body>
 </html>

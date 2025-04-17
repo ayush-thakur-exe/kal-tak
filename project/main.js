@@ -162,12 +162,24 @@ app.get("/search", (req, res, next) => {
     let startI = (parseInt(page) - 1) * 10
     let query = req.query.q ?? null
 
+    // sorting by date
+    let sortField = req.query.sort ?? null
+    let order = req.query.order ?? "desc"
+
     if(query == null){
         res.send("Please enter a query")
     }
     
     ArticleModel().then(model => {
-        return model.find({$text: {$search: query}}).skip(startI).limit(10)
+        if(sortField == null){
+            return model.find({$text: {$search: query}}).skip(startI).limit(10)
+        }else{
+            if(sortField === "date" && order === "desc"){
+                return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: -1})
+            }else{
+                return model.find({$text: {$search: query}}).skip(startI).limit(10).sort({date: 1})
+            }
+        }
     }).then( result =>
         res.render('pages/home', {articles: result})
     ).catch(err => {
