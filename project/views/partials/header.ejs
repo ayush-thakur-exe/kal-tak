@@ -58,10 +58,29 @@
 
         border-bottom: 2px solid var(--light-g);
     }
+ 
+    @keyframes move-words {
+        0% {
+            left: 100%;
+        }
+        100% {
+            left: -200%;
+        }
+    }
 
     .live-news{
         padding: 20px 0px;
         border-bottom: 2px solid var(--light-g);
+        overflow: hidden;
+        position: relative;
+        height: fit-content;
+    }
+    
+    .live-news-content{
+        width: fit-content;
+        position: absolute;
+        
+        animation: move-words 20s linear infinite;
     }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0&icon_names=person_edit" />
@@ -112,6 +131,8 @@
     </div>
 
     <div class="live-news">
-        News here constantly rotating....
+        <div class="live-news-content">
+            Twitter Is Pissed Michael Kors Showed Traditional Mexican Sweaters At NYFW... Serena Williams Writes Sweet Note To Meghan Markle Praising Her New Project... 8 Of The Best Beauty Buys From Ulta's Massive Fall Sale... Amy Schumer's Clothing Line, Le Cloud, Is What Dreams Are Made Of
+        </div>
     </div>
 </header>
