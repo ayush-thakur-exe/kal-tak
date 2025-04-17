@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= article.headline.substr(0, 10) + "..." %></title>
+    <link href="/css/common.css" rel="stylesheet" />
+
+    <style>
+        .article-headline{
+            font-size: 2.8em;
+            font-family: Nexa;
+            text-transform: uppercase;
+            margin: 30px 0px 50px 0px;
+        }
+
+        .article-body{
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+
+            gap: 20px;
+        }
+
+        .article-image img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .article-meta{
+            font-size: 0.8em;
+            color: var(--dark-g);
+            margin-bottom: 10px;
+        }
+
+        .article-description{
+            margin-bottom: 60px;
+            letter-spacing: 2px;
+            font-size: 2em;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <%- include('../partials/header') %>
+        
+        <div class="article-headline">
+            <%= article.headline %>
+        </div>
+
+        <div class="article-body">
+            <div class="article-image">
+                <img src="https://picsum.photos/seed/<%= Math.floor(Math.random() * 500) %>/600/400" />
+            </div>
+            <div>
+                <div class="article-meta">
+                    Date: <%= article.date %>
+                    <br/>
+                    Author: <%= article.authors %>
+                </div>
+                <div class="article-description">
+                    <%= article.short_description %>
+                </div>
+                <div class="article-link">
+                    <a class="dark-button-a" href=<%= article.link %>>
+                        Read More ↗
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <%- include('../partials/footer') %>
+    </div>
+</body>
+</html>

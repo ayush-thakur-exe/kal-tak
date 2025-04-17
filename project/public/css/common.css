@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@font-face {
+    font-family: NexaLight;
+    src: url('/assets/Nexa-ExtraLight.ttf');
+}
+
+@font-face {
+    font-family: Nexa;
+    src: url('/assets/Nexa-Heavy.ttf');
+}
+
+:root{
+    --light-g: #D9D9D9;
+    --dark-g: #9D9D9D;
+    --dark-red: #A81917;
+    --dark-green: #3c7a40;
+    --light-green: #7ade81;
+}
+
+body{
+    font-family: Montserrat;
+}
+
+.container{
+    width: 80%;
+    margin: auto;
+}
+
+.button-a, .dark-button-a, .red-button-a, .green-button-a{
+    background-color: var(--light-g);
+    border-radius: 10px;
+    padding: 10px;
+
+    text-decoration: none;
+    color: black;
+}
+
+.dark-button-a{
+    color: white;
+    background-color: black;
+}
+
+.red-button-a{
+    background-color: var(--dark-red);
+}
+
+.green-button-a{
+    background-color: var(--light-green);
+}
+
+.button-a:hover, .dark-button-a:hover, .red-button-a:hover, .green-button-a:hover{
+    filter: brightness(75%);
+    cursor: pointer;
+}
+
+.undecorated-a{
+    text-decoration: none;
+    color: black;
+}
+
+.col-span-2{
+    grid-column: span 2;
+}
