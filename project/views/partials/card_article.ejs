@@ -1,0 +1,26 @@
+<div class="article-card">
+    <div class="article-thumbnail">
+        <a class="undecorated-a" href=<%= "/article/" + article._id %>>
+            <img src="https://picsum.photos/seed/<%= Math.floor(Math.random() * 500) %>/300/200" />
+        </a>
+    </div>
+    <div class="article-text">
+        <a class="undecorated-a" href=<%= "/article/" + article._id %>>
+        <div class="article-headline">
+            <%= article.headline != undefined ? article.headline : "News" %>
+        </div>
+        <div class="article-description">
+            <%= article.short_description != undefined ? article.short_description : "no description provided..." %>
+        </div>
+        <div class="article-date">
+            Date: <%= article.date != undefined ? article.date : "" %>
+        </div>
+        </a>
+    </div>
+</div>
+<script>
+    var link = "<%= article.link %>"
+    fetch(link, {mode:"cors"}).then(result => {
+        console.log(result.body)
+    })
+</script>
